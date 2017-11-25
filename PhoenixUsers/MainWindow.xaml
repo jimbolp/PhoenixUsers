@@ -10,16 +10,9 @@
         <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" Width="163" Foreground="#FFB6B3B3" LostFocus="SearchBox_LostFocus" GotFocus="SearchBox_GotFocus"/>
         <Button Content="Button" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="75"/>
         <DockPanel LastChildFill="False" HorizontalAlignment="Right" Width="170">
-            <GroupBox Header="Склад" Height="148" VerticalAlignment="Top" Width="170" FontWeight="Bold" DockPanel.Dock="Right">
-                <Grid Margin="0,0,-2,-12">
-                    <CheckBox Content="София" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Content="Бургас" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Content="Пловдив" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Content="Велико Търново" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"/>
-                </Grid>
-            </GroupBox>
+            <ListBox x:Name="ListBranches" Height="172" VerticalAlignment="Top" Width="168" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple"/>
         </DockPanel>
-        <DataGrid Margin="10,62,175,10"/>
+        <DataGrid x:Name="UsersTable" Margin="10,62,175,10"/>
 
     </Grid>
 </Window>

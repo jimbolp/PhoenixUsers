@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="UserDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'UserDB.dbo.AD User Groups' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AD User Groups">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="GroupName" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="GroupName" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" />
+          <Property Name="Description" Type="ntext" />
+        </EntityType>
+        <EntityType Name="ADUsers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="ADName" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Branch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="BranchName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="KSC">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BranchID" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="TermID" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="UID" Type="int" Nullable="false" />
+          <Property Name="AllowFC" Type="bit" Nullable="false" />
+          <Property Name="isActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Positions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Position" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserMasterData">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="BranchID" Type="int" Nullable="false" />
+          <Property Name="PositionID" Type="int" />
+          <Property Name="PharmosUserName" Type="varchar" MaxLength="50" />
+          <Property Name="UADMUserName" Type="varchar" MaxLength="50" />
+          <Property Name="GI" Type="bit" />
+          <Property Name="Purchase" Type="bit" />
+          <Property Name="Tender" Type="bit" />
+          <Property Name="Phibra" Type="bit" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <Association Name="FK_ADUsers_UserMasterData">
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="1" />
+          <End Role="ADUsers" Type="Self.ADUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserMasterData">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ADUsers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KSC_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="1" />
+          <End Role="KSC" Type="Self.KSC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="KSC">
+              <PropertyRef Name="BranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KSC_UserMasterData">
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="KSC" Type="Self.KSC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserMasterData">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="KSC">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserMasterData_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="1" />
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserMasterData">
+              <PropertyRef Name="BranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserMasterData_Positions">
+          <End Role="Positions" Type="Self.Positions" Multiplicity="0..1" />
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Positions">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserMasterData">
+              <PropertyRef Name="PositionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="UserDBModelStoreContainer">
+          <EntitySet Name="ADUsers" EntityType="Self.ADUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Branch" EntityType="Self.Branch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KSC" EntityType="Self.KSC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Positions" EntityType="Self.Positions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserMasterData" EntityType="Self.UserMasterData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AD User Groups" EntityType="Self.AD User Groups" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AD User Groups].[ID] AS [ID], 
+    [AD User Groups].[GroupName] AS [GroupName], 
+    [AD User Groups].[Type] AS [Type], 
+    [AD User Groups].[Description] AS [Description]
+    FROM [dbo].[AD User Groups] AS [AD User Groups]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ADUsers_UserMasterData" Association="Self.FK_ADUsers_UserMasterData">
+            <End Role="UserMasterData" EntitySet="UserMasterData" />
+            <End Role="ADUsers" EntitySet="ADUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KSC_Branch" Association="Self.FK_KSC_Branch">
+            <End Role="Branch" EntitySet="Branch" />
+            <End Role="KSC" EntitySet="KSC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KSC_UserMasterData" Association="Self.FK_KSC_UserMasterData">
+            <End Role="UserMasterData" EntitySet="UserMasterData" />
+            <End Role="KSC" EntitySet="KSC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserMasterData_Branch" Association="Self.FK_UserMasterData_Branch">
+            <End Role="Branch" EntitySet="Branch" />
+            <End Role="UserMasterData" EntitySet="UserMasterData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserMasterData_Positions" Association="Self.FK_UserMasterData_Positions">
+            <End Role="Positions" EntitySet="Positions" />
+            <End Role="UserMasterData" EntitySet="UserMasterData" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="UserDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ADUser">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="ADName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="UserMasterData" Relationship="Self.FK_ADUsers_UserMasterData" FromRole="ADUsers" ToRole="UserMasterData" />
+        </EntityType>
+        <EntityType Name="Branch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="BranchName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="KSCs" Relationship="Self.FK_KSC_Branch" FromRole="Branch" ToRole="KSC" />
+          <NavigationProperty Name="UserMasterDatas" Relationship="Self.FK_UserMasterData_Branch" FromRole="Branch" ToRole="UserMasterData" />
+        </EntityType>
+        <EntityType Name="KSC">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BranchID" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="TermID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UID" Type="Int32" Nullable="false" />
+          <Property Name="AllowFC" Type="Boolean" Nullable="false" />
+          <Property Name="isActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Branch" Relationship="Self.FK_KSC_Branch" FromRole="KSC" ToRole="Branch" />
+          <NavigationProperty Name="UserMasterData" Relationship="Self.FK_KSC_UserMasterData" FromRole="KSC" ToRole="UserMasterData" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Position1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="UserMasterDatas" Relationship="Self.FK_UserMasterData_Positions" FromRole="Positions" ToRole="UserMasterData" />
+        </EntityType>
+        <EntityType Name="UserMasterData">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BranchID" Type="Int32" Nullable="false" />
+          <Property Name="PositionID" Type="Int32" />
+          <Property Name="PharmosUserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UADMUserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GI" Type="Boolean" />
+          <Property Name="Purchase" Type="Boolean" />
+          <Property Name="Tender" Type="Boolean" />
+          <Property Name="Phibra" Type="Boolean" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ADUsers" Relationship="Self.FK_ADUsers_UserMasterData" FromRole="UserMasterData" ToRole="ADUsers" />
+          <NavigationProperty Name="Branch" Relationship="Self.FK_UserMasterData_Branch" FromRole="UserMasterData" ToRole="Branch" />
+          <NavigationProperty Name="KSCs" Relationship="Self.FK_KSC_UserMasterData" FromRole="UserMasterData" ToRole="KSC" />
+          <NavigationProperty Name="Position" Relationship="Self.FK_UserMasterData_Positions" FromRole="UserMasterData" ToRole="Positions" />
+        </EntityType>
+        <EntityType Name="AD_User_Group">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="GroupName" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="GroupName" Type="String" MaxLength="80" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_ADUsers_UserMasterData">
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="1" />
+          <End Role="ADUsers" Type="Self.ADUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserMasterData">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ADUsers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KSC_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="1" />
+          <End Role="KSC" Type="Self.KSC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="KSC">
+              <PropertyRef Name="BranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserMasterData_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="1" />
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserMasterData">
+              <PropertyRef Name="BranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KSC_UserMasterData">
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="KSC" Type="Self.KSC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserMasterData">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="KSC">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserMasterData_Positions">
+          <End Role="Positions" Type="Self.Position" Multiplicity="0..1" />
+          <End Role="UserMasterData" Type="Self.UserMasterData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Positions">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserMasterData">
+              <PropertyRef Name="PositionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="UserDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ADUsers" EntityType="Self.ADUser" />
+          <EntitySet Name="Branches" EntityType="Self.Branch" />
+          <EntitySet Name="KSCs" EntityType="Self.KSC" />
+          <EntitySet Name="Positions" EntityType="Self.Position" />
+          <EntitySet Name="UserMasterDatas" EntityType="Self.UserMasterData" />
+          <EntitySet Name="AD_User_Groups" EntityType="Self.AD_User_Group" />
+          <AssociationSet Name="FK_ADUsers_UserMasterData" Association="Self.FK_ADUsers_UserMasterData">
+            <End Role="UserMasterData" EntitySet="UserMasterDatas" />
+            <End Role="ADUsers" EntitySet="ADUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KSC_Branch" Association="Self.FK_KSC_Branch">
+            <End Role="Branch" EntitySet="Branches" />
+            <End Role="KSC" EntitySet="KSCs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserMasterData_Branch" Association="Self.FK_UserMasterData_Branch">
+            <End Role="Branch" EntitySet="Branches" />
+            <End Role="UserMasterData" EntitySet="UserMasterDatas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KSC_UserMasterData" Association="Self.FK_KSC_UserMasterData">
+            <End Role="UserMasterData" EntitySet="UserMasterDatas" />
+            <End Role="KSC" EntitySet="KSCs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserMasterData_Positions" Association="Self.FK_UserMasterData_Positions">
+            <End Role="Positions" EntitySet="Positions" />
+            <End Role="UserMasterData" EntitySet="UserMasterDatas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="UserDBModelStoreContainer" CdmEntityContainer="UserDBEntities">
+          <EntitySetMapping Name="ADUsers">
+            <EntityTypeMapping TypeName="UserDBModel.ADUser">
+              <MappingFragment StoreEntitySet="ADUsers">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ADName" ColumnName="ADName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Branches">
+            <EntityTypeMapping TypeName="UserDBModel.Branch">
+              <MappingFragment StoreEntitySet="Branch">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KSCs">
+            <EntityTypeMapping TypeName="UserDBModel.KSC">
+              <MappingFragment StoreEntitySet="KSC">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="TermID" ColumnName="TermID" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AllowFC" ColumnName="AllowFC" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Positions">
+            <EntityTypeMapping TypeName="UserDBModel.Position">
+              <MappingFragment StoreEntitySet="Positions">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Position1" ColumnName="Position" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserMasterDatas">
+            <EntityTypeMapping TypeName="UserDBModel.UserMasterData">
+              <MappingFragment StoreEntitySet="UserMasterData">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+                <ScalarProperty Name="PositionID" ColumnName="PositionID" />
+                <ScalarProperty Name="PharmosUserName" ColumnName="PharmosUserName" />
+                <ScalarProperty Name="UADMUserName" ColumnName="UADMUserName" />
+                <ScalarProperty Name="GI" ColumnName="GI" />
+                <ScalarProperty Name="Purchase" ColumnName="Purchase" />
+                <ScalarProperty Name="Tender" ColumnName="Tender" />
+                <ScalarProperty Name="Phibra" ColumnName="Phibra" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AD_User_Groups">
+            <EntityTypeMapping TypeName="UserDBModel.AD_User_Group">
+              <MappingFragment StoreEntitySet="AD User Groups">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

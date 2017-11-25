@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="59cafaf00432477e80759d7f68efac4b" Name="Diagram1">
+        <EntityTypeShape EntityType="UserDBModel.ADUser" Width="1.5" PointX="8.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Branch" Width="1.5" PointX="0.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.KSC" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.Position" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.UserMasterData" Width="1.5" PointX="6" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="UserDBModel.AD_User_Group" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <AssociationConnector Association="UserDBModel.FK_ADUsers_UserMasterData" ManuallyRouted="false" />
+        <AssociationConnector Association="UserDBModel.FK_KSC_Branch" ManuallyRouted="false" />
+        <AssociationConnector Association="UserDBModel.FK_UserMasterData_Branch" ManuallyRouted="false" />
+        <AssociationConnector Association="UserDBModel.FK_KSC_UserMasterData" ManuallyRouted="false" />
+        <AssociationConnector Association="UserDBModel.FK_UserMasterData_Positions" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
