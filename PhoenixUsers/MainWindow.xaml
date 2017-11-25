@@ -10,7 +10,7 @@
         <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" Width="163" Foreground="#FFB6B3B3" LostFocus="SearchBox_LostFocus" GotFocus="SearchBox_GotFocus"/>
         <Button Content="Button" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="75"/>
         <DockPanel LastChildFill="False" HorizontalAlignment="Right" Width="170">
-            <ListBox x:Name="ListBranches" Height="172" VerticalAlignment="Top" Width="168" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple"/>
+            <ListBox x:Name="ListBranches" Height="172" VerticalAlignment="Top" Width="168" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple" SelectionChanged="ListBranches_SelectionChanged"/>
         </DockPanel>
         <DataGrid x:Name="UsersTable" Margin="10,62,175,10"/>
 

@@ -6,6 +6,7 @@ using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +28,7 @@ namespace PhoenixUsers
         UserDBEntities db;
         ObservableCollection<Branch> branches;
         ObservableCollection<Position> positions;
-        ObservableCollection<UserMasterData> users;
+        ObservableCollection<User> users;
         public MainWindow()
         {
             try
@@ -53,10 +54,103 @@ namespace PhoenixUsers
 
         private void InitializeDataGrid()
         {
-            string sql = "select * from UserMasterData";
-            users = new ObservableCollection<UserMasterData>(db.Database.SqlQuery<UserMasterData>(sql).ToList());
+            string where = "";
+            string[] BranchName = null;
+            if(FilterBranches(out BranchName))
+            {
+                where = "";
+                if (BranchName != null && BranchName.Length != 0)
+                {
+                    where = " where ";
+                    for (int i = 0; i < BranchName.Length; ++i)
+                    {
+                        if (i != BranchName.Length - 1)
+                        {
+                            where += " b.BranchName = \'" + BranchName[i] + "\' OR ";
+                        }
+                        else
+                        {
+                            where += " b.BranchName = \'" + BranchName[i] + "\'";
+                        }
+                    }
+                }
+            }
+            string sqlQuery = @"select
+                            umd.ID
+                            ,umd.UserName
+                            ,umd.Email 
+                            ,ad.ADName as ActiveDirectory
+                            ,p.Position
+                            ,b.BranchName as Depo
+                            ,umd.PharmosUserName
+                            ,umd.UADMUserName 
+                            ,CAST(Case when k.UserName is NULL
+                            then 'Не'
+                            else 'Да'
+                            end as nvarchar) as KSC
+                            ,umd.GI as GoodsIn  
+                            ,umd.Purchase as PurchaseAccount
+                            ,umd.Tender as TenderAccount 
+                            ,umd.Phibra as PhibraAccount
+                            ,umd.Active as State 
+                            ,umd.Description 
+                            from UserMasterData umd
+                            left join ADUsers ad on ad.UserID = umd.ID
+                            left join Positions p on p.ID = umd.PositionID
+                            left join Branch b on b.ID = umd.BranchID
+                            left join KSC k on k.UserID = umd.ID";
+
+            string groupby = @" group by umd.ID
+                            ,umd.UserName
+                            ,umd.Email 
+                            ,ad.ADName
+                            ,p.Position
+                            ,b.BranchName
+                            ,umd.PharmosUserName
+                            ,umd.UADMUserName 
+                            ,umd.GI
+                            ,umd.Purchase
+                            ,umd.Tender
+                            ,umd.Phibra
+                            ,umd.Active
+                            ,umd.Description
+                            ,k.UserName";
+            string orderby = " order by umd.UserName";
+            string WholeQuery = sqlQuery + where + groupby + orderby;
             
-            UsersTable.ItemsSource = users;
+            if(UsersTable.Dispatcher.Invoke(() => UsersTable.Items != null && UsersTable.Items.Count != 0))
+            {
+                UsersTable.Dispatcher.Invoke(() => UsersTable.ItemsSource = users.Where(u => BranchName.Any(b => b == u.Depo)));
+            }
+            else
+            {
+                users = new ObservableCollection<User>(db.Database.SqlQuery<User>(WholeQuery));
+                UsersTable.Dispatcher.Invoke(() => UsersTable.ItemsSource = users);
+            }
+            
+        }
+
+        private bool FilterBranches(out string[] branchName)
+        {
+            try
+            {
+                if (ListBranches.Dispatcher.Thread != Thread.CurrentThread)
+                {
+                    branchName = ListBranches.Dispatcher.Invoke(() => ListBranches.SelectedItems.Cast<string>().ToArray());
+                    return true;
+                }
+                else
+                {
+                    branchName = ListBranches.SelectedItems.Cast<string>().ToArray();
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                branchName = null;
+                return false;
+            }
+            
         }
 
         private void InitializePositionsListBox()
@@ -78,12 +172,9 @@ namespace PhoenixUsers
             //ListBranches.DataContext = branches;
             ListBranches.ItemsSource = from branch in branches
                                        select branch.BranchName;
+            ListBranches.SelectAll();
         }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
+        
 
         private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -103,6 +194,13 @@ namespace PhoenixUsers
                 SearchBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF000000"));
                 SearchBox.Text = "";
             }
+        }
+
+        private void ListBranches_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Thread t = new Thread(InitializeDataGrid);
+            t.Start();
+            
         }
     }
 }

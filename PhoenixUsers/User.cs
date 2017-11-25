@@ -25,17 +25,17 @@ namespace PhoenixUsers
         [DisplayName("Акаунт в UADM")]
         public string UADMUserName { get; set; }
         [DisplayName("GoodsIn")]
-        public string GoodsIn { get; set; }
+        public bool GoodsIn { get; set; }
         [DisplayName("Purchase")]
-        public string PurchaseAccount { get; set; }
+        public bool PurchaseAccount { get; set; }
         [DisplayName("Tender")]
-        public string TenderAccount { get; set; }
+        public bool TenderAccount { get; set; }
         [DisplayName("Фибра")]
-        public string PhibraAccount { get; set; }
+        public bool PhibraAccount { get; set; }
         [DisplayName("KSC акаунт")]
         public string KSCAccount { get; set; }
         [DisplayName("Статус")]
-        public string State { get; set; }
+        public bool State { get; set; }
         [DisplayName("Доп. Информация")]
         public string Description { get; set; }
     }
