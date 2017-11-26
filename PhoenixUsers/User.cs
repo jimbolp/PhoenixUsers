@@ -7,17 +7,93 @@ using System.Threading.Tasks;
 
 namespace PhoenixUsers
 {
-    class User
+    public class User : INotifyPropertyChanged
     {
+        private int _id;
+        private string _userName;
+        private string _email;
+        private string _activeDirectory;
+        private string _position;
+
         [DisplayName("№")]
-        public int ID { get; set; }
+        public int ID
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value )
+                {
+                    _id = value;
+                    NotifyPropertyChanged("ID");
+                }
+            }
+        }
         [DisplayName("Потребител")]
-        public string UserName { get; set; }
-        public string Email { get; set; }
+        public string UserName
+        {
+            get
+            {
+                return _userName;
+            }
+            set
+            {
+                if (_userName != value)
+                {
+                    _userName = value;
+                    NotifyPropertyChanged("UserName");
+                }
+            }
+        }
+        public string Email
+        {
+            get
+            {
+                return _email;
+            }
+            set
+            {
+                if (_email != value)
+                {
+                    _email = value;
+                    NotifyPropertyChanged("Email");
+                }
+            }
+        }
         [DisplayName("Активна Директория")]
-        public string ActiveDirectory { get; set; }
+        public string ActiveDirectory
+        {
+            get
+            {
+                return _activeDirectory;
+            }
+            set
+            {
+                if (_activeDirectory != value)
+                {
+                    _activeDirectory = value;
+                    NotifyPropertyChanged("ActiveDirectory");
+                }
+            }
+        }
         [DisplayName("Длъжност")]
-        public string Position { get; set; }
+        public string Position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                if (_position != value)
+                {
+                    _position = value;
+                    NotifyPropertyChanged("Position");
+                }
+            }
+        }
         [DisplayName("Склад")]
         public string Depo { get; set; }
         [DisplayName("Фармос Акаунт")]
@@ -38,5 +114,14 @@ namespace PhoenixUsers
         public bool State { get; set; }
         [DisplayName("Доп. Информация")]
         public string Description { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 }

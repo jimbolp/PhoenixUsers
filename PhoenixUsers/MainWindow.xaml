@@ -6,13 +6,23 @@
         xmlns:local="clr-namespace:PhoenixUsers"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
+    <Window.Resources>
+        <Style TargetType="DataGridRow">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding State}" Value="False">
+                    <Setter Property="Background" Value="#FFFF1010" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+    </Window.Resources>
     <Grid>
-        <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" Width="163" Foreground="#FFB6B3B3" LostFocus="SearchBox_LostFocus" GotFocus="SearchBox_GotFocus"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="75"/>
-        <DockPanel LastChildFill="False" HorizontalAlignment="Right" Width="170">
-            <ListBox x:Name="ListBranches" Height="172" VerticalAlignment="Top" Width="168" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple" SelectionChanged="ListBranches_SelectionChanged"/>
+        <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Search..." VerticalAlignment="Top" Width="163" Foreground="#FFB6B3B3" LostFocus="SearchBox_LostFocus" GotFocus="SearchBox_GotFocus" ToolTip="Search" KeyUp="SearchBox_KeyUp"/>
+        <Button x:Name="btnSearch" Content="Търси" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="btnSearch_Click"/>
+        <DockPanel LastChildFill="False" HorizontalAlignment="Right" Width="170" Margin="0,0,0,394">
+            <ListBox x:Name="ListBranches" Width="168" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple" SelectionChanged="ListBranches_SelectionChanged" Margin="0,0,0,3"/>
         </DockPanel>
-        <DataGrid x:Name="UsersTable" Margin="10,62,175,10"/>
-
+        <Button x:Name="btnFilter" Content="Филтър" Width="75" Margin="0,185,51,0" HorizontalAlignment="Right" Height="20" VerticalAlignment="Top" IsEnabled="False" Click="btnFilter_Click"/>
+        <DataGrid x:Name="UsersTable" Margin="10,62,175,10">
+        </DataGrid>
     </Grid>
 </Window>

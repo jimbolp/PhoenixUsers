@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Entity.Core;
 using System.Data.SqlClient;
@@ -29,6 +30,8 @@ namespace PhoenixUsers
         ObservableCollection<Branch> branches;
         ObservableCollection<Position> positions;
         ObservableCollection<User> users;
+        CollectionViewSource _itemsSourceList;
+        ICollectionView itemsView;
         public MainWindow()
         {
             try
@@ -38,7 +41,8 @@ namespace PhoenixUsers
                 InitializeComponent();
                 InitializeBranchListBox();
                 InitializePositionsListBox();
-                InitializeDataGrid();
+                Thread t = new Thread(InitializeDataGrid);
+                t.Start();
             }
             catch (EntityException)
             {
@@ -55,26 +59,26 @@ namespace PhoenixUsers
         private void InitializeDataGrid()
         {
             string where = "";
-            string[] BranchName = null;
-            if(FilterBranches(out BranchName))
-            {
-                where = "";
-                if (BranchName != null && BranchName.Length != 0)
-                {
-                    where = " where ";
-                    for (int i = 0; i < BranchName.Length; ++i)
-                    {
-                        if (i != BranchName.Length - 1)
-                        {
-                            where += " b.BranchName = \'" + BranchName[i] + "\' OR ";
-                        }
-                        else
-                        {
-                            where += " b.BranchName = \'" + BranchName[i] + "\'";
-                        }
-                    }
-                }
-            }
+            //string[] BranchName = null;
+            //if(FilterBranches(out BranchName))
+            //{
+            //    where = "";
+            //    if (BranchName != null && BranchName.Length != 0)
+            //    {
+            //        where = " where ";
+            //        for (int i = 0; i < BranchName.Length; ++i)
+            //        {
+            //            if (i != BranchName.Length - 1)
+            //            {
+            //                where += " b.BranchName = \'" + BranchName[i] + "\' OR ";
+            //            }
+            //            else
+            //            {
+            //                where += " b.BranchName = \'" + BranchName[i] + "\'";
+            //            }
+            //        }
+            //    }
+            //}
             string sqlQuery = @"select
                             umd.ID
                             ,umd.UserName
@@ -118,40 +122,48 @@ namespace PhoenixUsers
             string orderby = " order by umd.UserName";
             string WholeQuery = sqlQuery + where + groupby + orderby;
             
-            if(UsersTable.Dispatcher.Invoke(() => UsersTable.Items != null && UsersTable.Items.Count != 0))
-            {
-                UsersTable.Dispatcher.Invoke(() => UsersTable.ItemsSource = users.Where(u => BranchName.Any(b => b == u.Depo)));
-            }
-            else
-            {
-                users = new ObservableCollection<User>(db.Database.SqlQuery<User>(WholeQuery));
-                UsersTable.Dispatcher.Invoke(() => UsersTable.ItemsSource = users);
-            }
-            
+            users = new ObservableCollection<User>(db.Database.SqlQuery<User>(WholeQuery));
+            _itemsSourceList = new CollectionViewSource() { Source = users };
+            itemsView = _itemsSourceList.View;
+            _itemsSourceList.Filter += new FilterEventHandler(FilterUsers);
+            UsersTable.Dispatcher.Invoke(() => UsersTable.ItemsSource = itemsView);
         }
+        
 
-        private bool FilterBranches(out string[] branchName)
+        private void FilterUsers(object sender, FilterEventArgs e)
         {
-            try
+            var user = e.Item as User;
+            if (user != null)
             {
-                if (ListBranches.Dispatcher.Thread != Thread.CurrentThread)
-                {
-                    branchName = ListBranches.Dispatcher.Invoke(() => ListBranches.SelectedItems.Cast<string>().ToArray());
-                    return true;
-                }
+                if (ListBranches.Dispatcher.Invoke(() => ListBranches.SelectedItems.Cast<string>().Any(b => b == user.Depo)) &&
+                    SearchBox.Dispatcher.Invoke(() => SearchBox.Text != "Search..."? user.UserName.Contains(SearchBox.Text) : true))
+                    e.Accepted = true;
                 else
-                {
-                    branchName = ListBranches.SelectedItems.Cast<string>().ToArray();
-                    return true;
-                }
+                    e.Accepted = false;
             }
-            catch (Exception)
-            {
-                branchName = null;
-                return false;
-            }
-            
         }
+        //private bool FilterBranches(out string[] branchName)
+        //{
+        //    try
+        //    {
+        //        if (ListBranches.Dispatcher.Thread != Thread.CurrentThread)
+        //        {
+        //            branchName = ListBranches.Dispatcher.Invoke(() => ListBranches.SelectedItems.Cast<string>().ToArray());
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            branchName = ListBranches.SelectedItems.Cast<string>().ToArray();
+        //            return true;
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        branchName = null;
+        //        return false;
+        //    }
+            
+        //}
 
         private void InitializePositionsListBox()
         {
@@ -183,13 +195,13 @@ namespace PhoenixUsers
             if (string.IsNullOrEmpty(SearchBox.Text.Trim()) || string.IsNullOrWhiteSpace(SearchBox.Text.Trim()))
             {
                 SearchBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFB6B3B3"));
-                SearchBox.Text = "Search";
+                SearchBox.Text = "Search...";
             }
         }
 
         private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(SearchBox.Text.Trim() == "Search")
+            if(SearchBox.Text.Trim() == "Search...")
             {
                 SearchBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF000000"));
                 SearchBox.Text = "";
@@ -198,9 +210,32 @@ namespace PhoenixUsers
 
         private void ListBranches_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Thread t = new Thread(InitializeDataGrid);
-            t.Start();
-            
+            if(btnFilter != null && !btnFilter.IsEnabled)
+            {
+                btnFilter.IsEnabled = true;
+            }            
+        }
+
+        private void btnFilter_Click(object sender, RoutedEventArgs e)
+        {
+            //Thread t = new Thread(InitializeDataGrid);
+            //t.Start();
+            itemsView.Refresh();
+            btnFilter.IsEnabled = false;
+        }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            SearchBox.Focus();
+            itemsView.Refresh();
+        }
+
+        private void SearchBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                btnSearch_Click(sender, new RoutedEventArgs());
+            }
         }
     }
 }
