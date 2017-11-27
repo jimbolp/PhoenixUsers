@@ -17,9 +17,9 @@ namespace PhoenixUsers
     /// <summary>
     /// Interaction logic for AddUser.xaml
     /// </summary>
-    public partial class AddUser : Window
+    public partial class EditUser : Window
     {
-        public AddUser()
+        public EditUser()
         {
             InitializeComponent();
         }
