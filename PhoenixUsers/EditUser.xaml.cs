@@ -19,9 +19,17 @@ namespace PhoenixUsers
     /// </summary>
     public partial class EditUser : Window
     {
-        public EditUser()
+        public List<KSC> kscUsers;
+        public EditUser(List<KSC> kscUsers)
         {
             InitializeComponent();
+            this.kscUsers = kscUsers;
+        }
+
+        private void EditUserWindow_Loaded(object sender, RoutedEventArgs e)
+        {            
+            KscDataGrid newGrid = new KscDataGrid(kscUsers);
+            EditUserWindow.WholeGrid.Children.Add(newGrid);
         }
     }
 }

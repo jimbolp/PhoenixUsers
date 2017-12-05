@@ -17,13 +17,68 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Search..." VerticalAlignment="Top" Width="163" Foreground="#FFB6B3B3" LostFocus="SearchBox_LostFocus" GotFocus="SearchBox_GotFocus" ToolTip="Search" KeyUp="SearchBox_KeyUp"/>
-        <Button x:Name="btnSearch" Content="Търси" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="BtnSearch_Click"/>
-        <DockPanel LastChildFill="False" HorizontalAlignment="Right" Width="170" Margin="0,0,0,394">
-            <ListBox x:Name="ListBranches" Width="168" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple" SelectionChanged="ListBranches_SelectionChanged" Margin="0,0,0,3"/>
-        </DockPanel>
-        <Button x:Name="btnFilter" Content="Филтър" Width="75" Margin="0,185,51,0" HorizontalAlignment="Right" Height="20" VerticalAlignment="Top" IsEnabled="False" Click="BtnFilter_Click"/>
-        <DataGrid x:Name="UsersTable" Margin="10,62,175,10" SelectionMode="Single" CellEditEnding="UsersTable_CellEditEnding"/>
-        <Label x:Name="WarningLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="100, 300,300,200" Visibility="Hidden"></Label>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="160"/>
+        </Grid.ColumnDefinitions>
+        
+        <!--Column 1-->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="55"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!--Row 1 -> Containing the controls for "Search" functionality-->
+            <Grid Grid.Row="0">
+                <TextBox x:Name="SearchBox" Padding="3" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Search..." VerticalAlignment="Top" Width="163" Foreground="#FFB6B3B3" LostFocus="SearchBox_LostFocus" GotFocus="SearchBox_GotFocus" ToolTip="Search" KeyUp="SearchBox_KeyUp"/>
+                <Button x:Name="btnSearch"  Padding="3" Content="Търси" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="BtnSearch_Click"/>
+            </Grid>
+            
+            <!--Row 2 -> Containing the actual table and a hidden Info label-->
+            <Border Padding="5" Grid.Row="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" x:Name="WarningLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden"/>
+                    <Grid Grid.Row="1">
+                        <DataGrid x:Name="UsersTable" FrozenColumnCount="2" Padding="5" SelectionMode="Single" SelectionChanged="UsersTable_SelectionChanged" LostFocus="UsersTable_LostFocus">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="Edit" Header="Edit" Click="Edit_Click"/>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!--Column 2 -> Containing the Filter functionality-->
+        <Border Padding="3" Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!--Dinamicaly filled list with branches for filtering-->
+                <ListBox x:Name="ListBranches" Grid.Row="0" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple" SelectionChanged="ListBranches_SelectionChanged"/>
+                <Button x:Name="btnFilter" Grid.Row="1" Content="Филтър" Width="75" HorizontalAlignment="Center" Height="20" VerticalAlignment="Center" IsEnabled="False" Click="BtnFilter_Click"/>
+
+                <StackPanel Grid.Row="2">
+                    <Border Padding="3">
+                        <Button x:Name="btnAddUser" Content="Добави"/>
+                    </Border>
+                    <Border Padding="3">
+                        <Button x:Name="btnEditUser" Content="Редактирай" IsEnabled="False"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+            
+        </Border>
     </Grid>
 </Window>

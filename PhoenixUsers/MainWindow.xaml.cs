@@ -7,6 +7,7 @@ using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Mail;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -75,7 +76,7 @@ namespace PhoenixUsers
                             ,CAST(Case when k.UserName is NULL
                             then 'Не'
                             else 'Да'
-                            end as nvarchar) as KSC
+                            end as varchar) as KSCAccount
                             ,umd.GI as GoodsIn  
                             ,umd.Purchase as PurchaseAccount
                             ,umd.Tender as TenderAccount 
@@ -204,9 +205,27 @@ namespace PhoenixUsers
 
         private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
         {
+            DataGridRow selectedRow = sender as DataGridRow;
+            User selectedUser = selectedRow.DataContext as User;
+
+            string sql = $"select * from KSC where UserID = {selectedUser.ID}";
+            List<KSC> kscUsers = db.Database.SqlQuery<KSC>(sql).ToList();
+            if (kscUsers == null || kscUsers.Count == 0)
+                return;
+
+            EditUser newWindow = new EditUser(kscUsers);
+            newWindow.Closed += NewWindow_Closed;
+            newWindow.Show();
+            
             /*EditUser formEditUser = new EditUser();
             formEditUser.Closed += FormEditUser_Closed;
             formEditUser.Show();//*/
+        }
+
+        private void NewWindow_Closed(object sender, EventArgs e)
+        {
+            MainWindow window = Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow as MainWindow);
+            
         }
 
         private void FormEditUser_Closed(object sender, EventArgs e)
@@ -267,10 +286,10 @@ namespace PhoenixUsers
             WarningLabel.Content = text;
             WarningLabel.BringIntoView();
             WarningLabel.Visibility = Visibility.Visible;
-            WarningLabel.Width = 150;
-            WarningLabel.Height = 40;
+            //WarningLabel.Width = 150;
+            //WarningLabel.Height = 40;
             WarningLabel.FontSize = 16.0;
-            WarningLabel.Background = new SolidColorBrush(Color.FromArgb(150, 170, 0, 0));
+            WarningLabel.Background = new SolidColorBrush(Color.FromArgb(75, 170, 0, 0));
             
             var a = new DoubleAnimation
             {
@@ -285,8 +304,36 @@ namespace PhoenixUsers
             storyboard.Children.Add(a);
             Storyboard.SetTarget(a, WarningLabel);
             Storyboard.SetTargetProperty(a, new PropertyPath(OpacityProperty));
-            storyboard.Completed += delegate { WarningLabel.Visibility = Visibility.Hidden; };
+            storyboard.Completed += delegate { WarningLabel.Visibility = Visibility.Collapsed; };
             storyboard.Begin();
         }//*/
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            if (UsersTable.SelectedItems == null || UsersTable.SelectedItems.Count == 0)
+                return;
+            UsersTable.IsReadOnly = false;
+        }
+
+        private void UsersTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (UsersTable.SelectedItems.Count != 1)
+                btnEditUser.IsEnabled = false;
+            else
+                btnEditUser.IsEnabled = true;
+            DataGrid dataGrid = sender as DataGrid;
+            if (dataGrid.SelectedValue == null)
+                return;
+            User selectedUser = dataGrid.SelectedValue as User;
+            if (selectedUser.State)
+            {
+
+            }
+        }
+
+        private void UsersTable_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UsersTable.SelectedIndex = -1;
+        }
     }
 }

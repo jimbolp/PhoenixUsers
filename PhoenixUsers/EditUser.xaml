@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhoenixUsers"
         mc:Ignorable="d"
-        Title="Edit User" Height="300" Width="300">
-    <Grid>
+        Title="Edit User" Height="300" Width="300"
+        Loaded="EditUserWindow_Loaded">
+    <Grid x:Name="WholeGrid">
         
     </Grid>
 </Window>

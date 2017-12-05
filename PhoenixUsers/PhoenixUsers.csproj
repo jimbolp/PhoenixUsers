@@ -82,6 +82,10 @@
     <Compile Include="KSC.cs">
       <DependentUpon>UserDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="KscDataGrid.xaml.cs">
+      <DependentUpon>KscDataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KscUser.cs" />
     <Compile Include="Position.cs">
       <DependentUpon>UserDB.tt</DependentUpon>
     </Compile>
@@ -105,6 +109,10 @@
       <DependentUpon>UserDB.tt</DependentUpon>
     </Compile>
     <Page Include="EditUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KscDataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
