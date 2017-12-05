@@ -17,19 +17,19 @@ namespace PhoenixUsers
     /// <summary>
     /// Interaction logic for AddUser.xaml
     /// </summary>
-    public partial class EditUser : Window
+    public partial class KscUsers : Window
     {
         public List<KSC> kscUsers;
-        public EditUser(List<KSC> kscUsers)
+        public KscUsers(List<KSC> kscUsers)
         {
             InitializeComponent();
             this.kscUsers = kscUsers;
         }
 
-        private void EditUserWindow_Loaded(object sender, RoutedEventArgs e)
+        private void KscUsersWindow_Loaded(object sender, RoutedEventArgs e)
         {            
             KscDataGrid newGrid = new KscDataGrid(kscUsers);
-            EditUserWindow.WholeGrid.Children.Add(newGrid);
+            KscUsersWindow.WholeGrid.Children.Add(newGrid);
         }
     }
 }

@@ -37,6 +37,7 @@ namespace PhoenixUsers
         ObservableCollection<User> users;
         CollectionViewSource _itemsSourceList;
         ICollectionView itemsView;
+        User selectedUser = null;
         public MainWindow()
         {
             try
@@ -206,20 +207,20 @@ namespace PhoenixUsers
         private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             DataGridRow selectedRow = sender as DataGridRow;
-            User selectedUser = selectedRow.DataContext as User;
+            selectedUser = selectedRow.DataContext as User;
 
             string sql = $"select * from KSC where UserID = {selectedUser.ID}";
             List<KSC> kscUsers = db.Database.SqlQuery<KSC>(sql).ToList();
             if (kscUsers == null || kscUsers.Count == 0)
+            {
+                selectedUser = null;
                 return;
+            }
 
-            EditUser newWindow = new EditUser(kscUsers);
+            KscUsers newWindow = new KscUsers(kscUsers);
             newWindow.Closed += NewWindow_Closed;
             newWindow.Show();
             
-            /*EditUser formEditUser = new EditUser();
-            formEditUser.Closed += FormEditUser_Closed;
-            formEditUser.Show();//*/
         }
 
         private void NewWindow_Closed(object sender, EventArgs e)

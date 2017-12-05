@@ -44,7 +44,7 @@
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" x:Name="WarningLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden"/>
                     <Grid Grid.Row="1">
-                        <DataGrid x:Name="UsersTable" FrozenColumnCount="2" Padding="5" SelectionMode="Single" SelectionChanged="UsersTable_SelectionChanged" LostFocus="UsersTable_LostFocus">
+                        <DataGrid x:Name="UsersTable" FrozenColumnCount="2" Padding="5" SelectionMode="Single" SelectionChanged="UsersTable_SelectionChanged" LostFocus="UsersTable_LostFocus" IsReadOnly="True">
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem x:Name="Edit" Header="Edit" Click="Edit_Click"/>

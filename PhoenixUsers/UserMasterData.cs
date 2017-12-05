@@ -41,5 +41,9 @@ namespace PhoenixUsers
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<KSC> KSCs { get; set; }
         public virtual Position Position { get; set; }
+        public override string ToString()
+        {
+            return $"{UserName}";
+        }
     }
 }

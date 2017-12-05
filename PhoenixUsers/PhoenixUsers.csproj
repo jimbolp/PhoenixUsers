@@ -67,8 +67,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EditUser.xaml.cs">
-      <DependentUpon>EditUser.xaml</DependentUpon>
+    <Compile Include="KscUsers.xaml.cs">
+      <DependentUpon>KscUsers.xaml</DependentUpon>
     </Compile>
     <Compile Include="ADUser.cs">
       <DependentUpon>UserDB.tt</DependentUpon>
@@ -108,7 +108,7 @@
     <Compile Include="UserMasterData.cs">
       <DependentUpon>UserDB.tt</DependentUpon>
     </Compile>
-    <Page Include="EditUser.xaml">
+    <Page Include="KscUsers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
