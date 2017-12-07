@@ -124,8 +124,7 @@ namespace PhoenixUsers
         
         private void FilterUsers(object sender, FilterEventArgs e)
         {
-            var user = e.Item as User;
-            if (user != null)
+            if (e.Item is User user)
             {
                 if (ListBranches.Dispatcher.Invoke(() => ListBranches.SelectedItems.Cast<string>().Any(b => b == user.Depo)) &&
                     SearchBox.Dispatcher.Invoke(() => SearchBox.Text != "Search..." ? user.UserName.ToLower().Contains(SearchBox.Text.ToLower()) : true))
@@ -213,6 +212,7 @@ namespace PhoenixUsers
             List<KSC> kscUsers = db.Database.SqlQuery<KSC>(sql).ToList();
             if (kscUsers == null || kscUsers.Count == 0)
             {
+                ShowWarningLabel($"{selectedUser.UserName} doesn't have KSC account(s)!");
                 selectedUser = null;
                 return;
             }
@@ -313,7 +313,7 @@ namespace PhoenixUsers
         {
             if (UsersTable.SelectedItems == null || UsersTable.SelectedItems.Count == 0)
                 return;
-            UsersTable.IsReadOnly = false;
+            selectedUser = UsersTable.SelectedValue as User;
         }
 
         private void UsersTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -324,16 +324,37 @@ namespace PhoenixUsers
                 btnEditUser.IsEnabled = true;
             DataGrid dataGrid = sender as DataGrid;
             if (dataGrid.SelectedValue == null)
-                return;
-            User selectedUser = dataGrid.SelectedValue as User;
-            if (selectedUser.State)
             {
-
+                selectedUser = null;
+                return;
+            }
+            selectedUser = dataGrid.SelectedValue as User;
+            //if (selectedUser.State)
+            //{
+            //    ChangeSelectionColor(true);
+            //}
+            //else
+            //{
+            //    ChangeSelectionColor(false);
+            //}
+        }
+        private void ChangeSelectionColor(bool active)
+        {
+            DataGridRow selectedRow = UsersTable.ItemContainerGenerator.ContainerFromIndex(UsersTable.SelectedIndex) as DataGridRow;
+            if (selectedRow == null)
+                return;
+            if (active)
+            {                
+                selectedRow.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                selectedRow.Foreground = new SolidColorBrush(Colors.Red);
             }
         }
-
         private void UsersTable_LostFocus(object sender, RoutedEventArgs e)
         {
+            selectedUser = null;
             UsersTable.SelectedIndex = -1;
         }
     }

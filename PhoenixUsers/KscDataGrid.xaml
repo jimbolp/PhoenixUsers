@@ -12,6 +12,16 @@
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="UserNameTextBlock" Grid.Row="0"/>
-        <DataGrid x:Name="KscGrid" Grid.Row="1"/>
+        <DataGrid x:Name="KscGrid" Grid.Row="1">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding isActive}" Value="False">
+                            <Setter Property="Background" Value="#FFFF1010" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
     </Grid>
 </UserControl>

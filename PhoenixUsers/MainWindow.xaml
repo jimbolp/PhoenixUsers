@@ -8,14 +8,13 @@
         Title="MainWindow" Height="600" Width="800">
     <Window.Resources>
         <Style TargetType="DataGridRow">
-            <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding State}" Value="False">
-                    <Setter Property="Background" Value="#FFFF1010" />
-                </DataTrigger>
-            </Style.Triggers>
+            
+            <!--<Style.Triggers>
+                
+            </Style.Triggers>-->
         </Style>
     </Window.Resources>
+    <!--Main Grid-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -42,9 +41,51 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
+                    
+                    <!--Hidden Info Label-->
                     <Label Grid.Row="0" x:Name="WarningLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden"/>
+                    
+                    <!--DataGrid-->
                     <Grid Grid.Row="1">
-                        <DataGrid x:Name="UsersTable" FrozenColumnCount="2" Padding="5" SelectionMode="Single" SelectionChanged="UsersTable_SelectionChanged" LostFocus="UsersTable_LostFocus" IsReadOnly="True">
+                        <DataGrid x:Name="UsersTable" FrozenColumnCount="2" Padding="5" SelectionMode="Extended" SelectionChanged="UsersTable_SelectionChanged" LostFocus="UsersTable_LostFocus" IsReadOnly="True">
+                            <DataGrid.Resources>
+                                
+                                <SolidColorBrush x:Key="selectedInactiveTextBrush" Color="Red" />
+                                <SolidColorBrush x:Key="selectedInactivebackgroungBrush" Color="IndianRed" />
+                                <SolidColorBrush x:Key="selectedActiveTextBrush" Color="White" />
+                                <SolidColorBrush x:Key="selectedActivebackgroungBrush" Color="CornflowerBlue" />
+                                <Style TargetType="DataGridRow">
+                                    <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                                    <Style.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                                    </Style.Resources>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding State}" Value="False">
+                                            <Setter Property="Background" Value="#FFFF1010" />
+                                        </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True"/>
+                                                <Condition Binding="{Binding State}" Value="False"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Foreground" Value="{StaticResource selectedInactiveTextBrush}"/>
+                                                <Setter Property="Background" Value="{StaticResource selectedInactivebackgroungBrush}"/>
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True"/>
+                                                <Condition Binding="{Binding State}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Foreground" Value="{StaticResource selectedActiveTextBrush}"/>
+                                                <Setter Property="Background" Value="{StaticResource selectedActivebackgroungBrush}"/>
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem x:Name="Edit" Header="Edit" Click="Edit_Click"/>
@@ -69,6 +110,7 @@
                 <ListBox x:Name="ListBranches" Grid.Row="0" IsSynchronizedWithCurrentItem="False" SelectionMode="Multiple" SelectionChanged="ListBranches_SelectionChanged"/>
                 <Button x:Name="btnFilter" Grid.Row="1" Content="Филтър" Width="75" HorizontalAlignment="Center" Height="20" VerticalAlignment="Center" IsEnabled="False" Click="BtnFilter_Click"/>
 
+                <!--Buttons for CRUD operations-->
                 <StackPanel Grid.Row="2">
                     <Border Padding="3">
                         <Button x:Name="btnAddUser" Content="Добави"/>
